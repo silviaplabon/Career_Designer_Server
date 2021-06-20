@@ -14,6 +14,7 @@ const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology:
 client.connect(err => {
   const EmployerCollection = client.db('Career_Designer').collection("Employer_Collection");
   const AllJobsCollection = client.db('Career_Designer').collection("AllJobCollection");
+  const AdminsCollection = client.db('Career_Designer').collection("AdminCollection");
 
 //   app.post('/adddata/PopularDrink', (req, res) => {
 //     const newProduct = req.body;
@@ -57,45 +58,23 @@ client.connect(err => {
         res.send(result.insertedCount > 0)
       })
   })
+  app.get('/userIsAdmin', (req, res) => {
+    AdminsCollection.find({ email: req.query.email })
+      .toArray((err, documents) => {
+        res.send(documents);
+      })
+  });
+  app.post('/newAdminMaker', (req, res) => {
+    const newAdmin = req.body;
+    console.log(req.body, "come from client site")
+    AdminsCollection.insertOne(newAdmin)
+      .then(result => {
+        console.log('inserted count', result.insertedCount);
+        res.send(result.insertedCount > 0)
+      })
+  })
 
 
- 
-
-
-
-//   app.get('/ingredientDrinksByName/:name', (req, res) => {
-//     const name = req.params.name;
-//     AllDrinksCollection.find({
-//       $or: [{ "strIngredient1": name }, { "strIngredient2": name }, { "strIngredient3": name }, { "strIngredient4": name }
-//         , { "strIngredient5": name }, { "strIngredient6": name }, { "strIngredient7": name }, { "strIngredient8": name }, { "strIngredient9": name }, { "strIngredient10": name }]
-//     })
-//       .toArray((err, products) => {
-//         res.send(products)
-//       })
-//   })
-
-//   app.get('/similarDrink/:glass/:category/:alcoholic', (req, res) => {
-//     const name = req.params.name;
-//     AllDrinksCollection.find({ $and: [{ strGlass: req.params.glass }, { strCategory: req.params.category }, { strAlcoholic: req.params.alcoholic }] })
-//       .toArray((err, products) => {
-//         res.send(products)
-//       })
-//   })
-
-
-//   app.get('/similarDrink/:glass/:category/:alcoholic', (req, res) => {
-//     const name = req.params.name;
-//     AllDrinksCollection.find({ $and: [{ strGlass: req.params.glass }, { strCategory: req.params.category }, { strAlcoholic: req.params.alcoholic }] })
-//       .toArray((err, products) => {
-//         res.send(products)
-//       })
-//   })
-//   app.get('/ingredientsListCollection', (req, res) => {
-//     IngredientsListCollection.find({})
-//       .toArray((err, products) => {
-//         res.send(products)
-//       })
-//   })
   
 });
 app.listen(port, () => {
