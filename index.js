@@ -121,11 +121,43 @@ client.connect(err => {
                 res.send(documents);
             })
     });
+    app.get('/pending_job_show', (req, res) => {
+        AllJobsCollection.find({status:'Pending'})
+            .toArray((err, documents) => {
+                console.log(err)
+                console.log(documents,"pending")
+                res.send(documents);
+            })
+    });
 
 
-
-
-
+    app.patch('/statusUpdate/job/:id', (req, res) => {
+        AllJobsCollection.updateOne({ _id: ObjectID(req.params.id) },
+          {
+            $set: { status: req.body.status }
+          })
+          .then(result => {
+              console.log('silvia is a ladies name')
+            res.send(result.modifiedCount > 0)
+          })
+      })
+      
+    // app.patch('/jobPosterUpdate/:id', (req, res) => {
+    //     AllJobsCollection.updateOne({ _id: ObjectID(req.params.id) },
+    //       {
+    //         $set: { poster: req.body.poster }
+    //       })
+    //       .then(result => {
+    //           console.log('silvia is a ladies name')
+    //         res.send(result.modifiedCount > 0)
+    //       })
+    //   })
+    app.get('/lengthOfEmployerJob', (req, res) => {
+        AllJobsCollection.find({ poster: req.query.email })
+            .toArray((err, documents) => {
+                res.send(documents);
+            })
+    });
 
 });
 app.listen(port, () => {
