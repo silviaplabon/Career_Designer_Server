@@ -17,7 +17,7 @@ client.connect(err => {
     const AdminsCollection = client.db('Career_Designer').collection("AdminCollection");
     const JobSeekersCollection=client.db('Career_Designer').collection("JobSeekerCollection");
     const MessagesCollection=client.db('Career_Designer').collection("MessageCollection");
-
+    const AppliedJobsCollection=client.db('Career_Designer').collection("AppliedJobCollection");
 
     app.post('/adding_a_employer', (req, res) => {
         const newemployer = req.body;
@@ -168,6 +168,33 @@ client.connect(err => {
             res.send(result.insertedCount > 0)
           })
       })
+      app.get('/seeker_is_available', (req, res) => {
+        JobSeekersCollection.find({ email: req.query.email })
+            .toArray((err, documents) => {
+                res.send(documents);
+            })
+    });
+    app.post('/ApplyForAJob', (req, res) => {
+        const newMessage = req.body;
+        console.log(req.body, "come from client site")
+        AppliedJobsCollection.insertOne(newMessage)
+          .then(result => {
+            console.log('inserted count', result.insertedCount);
+            res.send(result.insertedCount > 0)
+          })
+      })
+      app.get('/appliedJobList/:email', (req, res) => {
+          const emaildata=req.params.email;
+        AppliedJobsCollection.find({ email:emaildata})
+            .toArray((err, documents) => {
+                console.log(documents,"silvimdmkkk")
+                res.send(documents);
+            })
+    });
+
+
+     
+     
 
 });
 app.listen(port, () => {
