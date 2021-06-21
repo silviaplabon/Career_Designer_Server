@@ -15,7 +15,8 @@ client.connect(err => {
     const EmployerCollection = client.db('Career_Designer').collection("Employer_Collection");
     const AllJobsCollection = client.db('Career_Designer').collection("AllJobCollection");
     const AdminsCollection = client.db('Career_Designer').collection("AdminCollection");
-    const JobSeekersCollection=client.db('Career_Designer').collection("JobSeekerCollection")
+    const JobSeekersCollection=client.db('Career_Designer').collection("JobSeekerCollection");
+    const MessagesCollection=client.db('Career_Designer').collection("MessageCollection");
 
 
     app.post('/adding_a_employer', (req, res) => {
@@ -158,6 +159,15 @@ client.connect(err => {
                 res.send(documents);
             })
     });
+    app.post('/addMessage', (req, res) => {
+        const newMessage = req.body;
+        console.log(req.body, "come from client site")
+        MessagesCollection.insertOne(newMessage)
+          .then(result => {
+            console.log('inserted count', result.insertedCount);
+            res.send(result.insertedCount > 0)
+          })
+      })
 
 });
 app.listen(port, () => {
