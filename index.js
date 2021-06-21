@@ -113,6 +113,14 @@ client.connect(err => {
             })
     })
 
+    app.get('/all_candidator_collection', (req, res) => {
+        JobSeekersCollection.find({})
+            .toArray((err, documents) => {
+                console.log(err)
+                console.log(documents)
+                res.send(documents);
+            })
+    });
 
 
 
